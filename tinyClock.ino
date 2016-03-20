@@ -7,7 +7,42 @@
  * Method for steady clock used from here:
  * http://www.instructables.com/id/Make-an-accurate-Arduino-clock-using-only-one-wire/
  * 
+ * Connection:
+ * Pin 0 - DIn '595 & BTN
+ * Pin 1 - to INT0 (Pin 2)
+ * Pin 2 - to Pin 1
+ * Pin 3 - STCP '595
+ * Pin 4 - SHCP '595
+ * 
+ * Segments:
+ * --------------------------------------
+ * Bit:|| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 ||
+ *     ||-------------------------------||
+ *     ||D11|D10|D01|D00|DP | C | B | A ||->Send as byte_A
+ *     ||D11|D10|D01|D00| G | F | E | D ||->Send as byte_B
+ *      ---------------------------------
+ * D00-D11 = Selects which of the 'Segment Parts' is supposed to be lit
+ * 
+ * Segment Mapping:
+ *              8h   4h
+ * ->Top=Hour  ---- ----
+ *            |    |    |
+ *            |   16h   |
+ *            |    |    |
+ *             ---- ----
+ *              2h   1h
+ * ->Bottom=Minutes
+ *                      o =>DP as Sec Indicator
+ *              8m   4m
+ *             ---- ----
+ *            |    |    |
+ *           30m   |   15m
+ *            |    |    |
+ *             ---- ----
+ *              2m   1m
+ * 
 */
+
 //Library to turn off unneccessary parts:
 #include <avr/power.h>
 
